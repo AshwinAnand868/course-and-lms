@@ -21,8 +21,8 @@ export const SidebarItem = ({
     const router = useRouter();
 
     const isActive = pathname === "/" && href === "/" ||
-        pathname === href ||
-        pathname?.startsWith(`${href}/`);
+        pathname === href || // for exact routes
+        pathname?.startsWith(`${href}/`); // for sub routes
 
     const onClick = () => router.push(href);
 

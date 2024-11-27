@@ -1,3 +1,4 @@
+import { ToastProvider } from '@/components/providers/toaster-provider';
 import {
   ClerkProvider
 } from '@clerk/nextjs';
@@ -32,6 +33,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <ToastProvider />
           {children}
         </body>
       </html>
