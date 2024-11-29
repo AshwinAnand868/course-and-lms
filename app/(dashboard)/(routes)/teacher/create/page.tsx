@@ -5,13 +5,13 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
@@ -42,9 +42,9 @@ const CreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-        const response = await axios.post('/api/course', values);
-        router.push(`/teacher/courses/${response.data.id}`);
-
+        const response = await axios.post('/api/courses', values);
+        router.push(`/teacher/courses/${response.data.id}`); // response.data is not part of our api - it is by axios
+        toast.success("Course created")
     } catch {
         toast.error('Something went wrong!')
     }
