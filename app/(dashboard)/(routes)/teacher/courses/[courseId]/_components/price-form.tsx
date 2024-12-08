@@ -13,35 +13,33 @@ import {
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { Course } from "@prisma/client";
 import axios from "axios";
 import { Pencil, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-interface DescriptionFormProps {
-  initialData: {
-    description: string | null;
-  };
+interface PriceFormProps {
+  initialData: Course;
   courseId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: "Description is required",
-  }).nullable(),
+  price: z.coerce.number(),
 });
 
-const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || ""
+      price: initialData?.price || undefined,
     },
   });
 
@@ -65,7 +63,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Course price
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
             <>
@@ -75,13 +73,22 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
           ) : (
             <>
               <Pencil className="h-4 w-4" />
-              Edit description
+              Edit price
             </>
           )}
         </Button>
       </div>
       {!isEditing ? (
-        <p className={cn("text-sm mt-2", !initialData.description && "text-slate-500 italic")}>{initialData.description || "No description"}</p>
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.price && "text-slate-500 italic"
+          )}
+        >
+          {initialData.price
+            ? formatPrice(initialData.price)
+            : "No price set yet"}
+        </p>
       ) : (
         <Form {...form}>
           <form
@@ -90,15 +97,16 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
           >
             <FormField
               control={form.control}
-              name="description"
+              name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
+                    <Input
+                      placeholder="Set a price for your course - e.g. $125"
+                      type="number"
+                      step="0.01"
                       disabled={isSubmitting}
-                      placeholder="e.g. 'This course is about...'"
                       {...field}
-                      value={field.value!}
                     />
                   </FormControl>
                   <FormMessage />
@@ -116,4 +124,4 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   );
 };
 
-export default DescriptionForm;
+export default PriceForm;

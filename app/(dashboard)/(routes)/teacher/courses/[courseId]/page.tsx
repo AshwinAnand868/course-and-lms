@@ -1,9 +1,18 @@
 import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { LayoutDashboard } from "lucide-react";
+import {
+  CircleDollarSign,
+  File,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 import { redirect } from "next/navigation";
+import AttachmentForm from "./_components/attachment-form";
+import CategoryForm from "./_components/category-form";
 import DescriptionForm from "./_components/description-form";
+import ImageForm from "./_components/image-form";
+import PriceForm from "./_components/price-form";
 import TitleForm from "./_components/title-form";
 
 const CourseIdPage = async ({
@@ -23,7 +32,22 @@ const CourseIdPage = async ({
     where: {
       id: params.courseId,
     },
+    include: {
+      attachments: {
+        orderBy: {
+          createdAt: "desc"
+        }
+      }
+    }
   });
+
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  // console.log(categories);
 
   if (!course) {
     return redirect("/");
@@ -34,7 +58,7 @@ const CourseIdPage = async ({
     course.description,
     course.imageUrl,
     course.price,
-    course.categoryId
+    course.categoryId,
   ];
 
   const totalFields = requiredFields.length;
@@ -42,13 +66,12 @@ const CourseIdPage = async ({
 
   const completionText = `(${completedFields}/${totalFields})`;
 
-  return ( // jsx land
+  return (
+    // jsx land
     <div className="p-6">
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-y-2">
-          <h1 className="text-2xl font-medium">
-            Course Setup
-          </h1>
+          <h1 className="text-2xl font-medium">Course Setup</h1>
           <span className="text-sm text-slate-700">
             Completed all fields {completionText}
           </span>
@@ -58,21 +81,44 @@ const CourseIdPage = async ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
         <div>
           <div className="flex items-center gap-x-2">
-            <IconBadge
-              icon={LayoutDashboard}
-            />
-            <h2 className="text-xl">
-              Customize your course
-            </h2>
+            <IconBadge icon={LayoutDashboard} />
+            <h2 className="text-xl">Customize your course</h2>
           </div>
-          <TitleForm
+          <TitleForm initialData={course} courseId={course.id} />
+          <DescriptionForm initialData={course} courseId={course.id} />
+          <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
             initialData={course}
             courseId={course.id}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
           />
-          <DescriptionForm
-            initialData={course}
-            courseId={course.id}
-          />
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={ListChecks} />
+              <h2 className="text-xl">Course Chapters</h2>
+            </div>
+            <div>TODO: Chapters</div>
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={CircleDollarSign} />
+              <h2 className="text-xl">Sell your course</h2>
+            </div>
+            <PriceForm initialData={course} courseId={course.id} />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={File} />
+              <h2 className="text-xl">Resources & Attachments</h2>
+            </div>
+            <AttachmentForm initialData={course} courseId={course.id} />
+          </div>
         </div>
       </div>
     </div>

@@ -44,7 +44,7 @@ const CreatePage = () => {
     try {
         const response = await axios.post('/api/courses', values);
         router.push(`/teacher/courses/${response.data.id}`); // response.data is not part of our api - it is by axios
-        toast.success("Course created")
+        toast.success("Course created");
     } catch {
         toast.error('Something went wrong!')
     }
