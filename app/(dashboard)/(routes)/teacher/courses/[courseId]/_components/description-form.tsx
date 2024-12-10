@@ -31,7 +31,7 @@ interface DescriptionFormProps {
 const formSchema = z.object({
   description: z.string().min(1, {
     message: "Description is required",
-  }).nullable(),
+  }),
 });
 
 const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
@@ -98,7 +98,6 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
                       disabled={isSubmitting}
                       placeholder="e.g. 'This course is about...'"
                       {...field}
-                      value={field.value!}
                     />
                   </FormControl>
                   <FormMessage />

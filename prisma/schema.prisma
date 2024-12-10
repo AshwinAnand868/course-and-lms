@@ -12,46 +12,46 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Course {
-  id String @id @default(uuid())
-  userId String
-  title String @db.Text
-  description String? @db.Text
-  imageUrl String? @db.Text
-  price Float?
-  isPublished Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  userId      String
+  title       String   @db.Text
+  description String?  @db.Text
+  imageUrl    String?  @db.Text
+  price       Float?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   categoryId String?
-  category Category? @relation(fields: [categoryId], references: [id]) // course doesn't need to belong to a category
+  category   Category? @relation(fields: [categoryId], references: [id]) // course doesn't need to belong to a category
 
   attachments Attachment[]
-  chapters Chapter[]
-  purchases Purchase[]
+  chapters    Chapter[]
+  purchases   Purchase[]
 
   @@index([categoryId])
 }
 
 // category can have many courses
 model Category {
-  id String @id @default(uuid())
-  name String @unique
+  id      String   @id @default(uuid())
+  name    String   @unique
   courses Course[]
 }
 
 model Attachment {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
   name String
-  url String @db.Text
+  url  String @db.Text
 
   courseId String // below is the line which defines the relationship
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,18 +60,18 @@ model Attachment {
 }
 
 model Chapter {
-  id String @id @default(uuid())
-  title String
+  id          String  @id @default(uuid())
+  title       String
   description String? @db.Text
-  videoUrl String? @db.Text
-  position Int
+  videoUrl    String? @db.Text
+  position    Int
   isPublished Boolean @default(false)
-  isFree Boolean @default(false)
+  isFree      Boolean @default(false)
 
   muxData MuxData?
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   userProgress UserProgress[] // user will have specific progress on each chapter
 
@@ -82,39 +82,36 @@ model Chapter {
 }
 
 model MuxData {
-  id String @id @default(uuid())
-  assetId String
+  id         String  @id @default(uuid())
+  assetId    String
   playbackId String?
 
-
-  chapterId String @unique
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-
+  chapterId String  @unique
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 }
 
 model UserProgress {
-  id String @id @default(uuid())
+  id     String @id @default(uuid())
   userId String // limit to one user
-  
-  chapterId String @unique
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  chapterId String  @unique
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   isCompleted Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([chapterId])
   @@unique([userId, chapterId])
+  @@index([chapterId])
 }
 
 model Purchase {
-  id String @id @default(uuid())
+  id     String @id @default(uuid())
   userId String
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -123,8 +120,8 @@ model Purchase {
 }
 
 model StripeCustomer {
-  id String @id @default(uuid())
-  userId String @unique
+  id               String @id @default(uuid())
+  userId           String @unique
   stripeCustomerId String @unique
 
   createdAt DateTime @default(now())
