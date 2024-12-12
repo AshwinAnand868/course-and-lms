@@ -106,7 +106,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
             />
 
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting}>Save</Button>
+              <Button disabled={!isValid || isSubmitting} type="submit">Save</Button>
             </div>
           </form>
         </Form>

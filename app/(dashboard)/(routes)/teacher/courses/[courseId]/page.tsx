@@ -10,6 +10,7 @@ import {
 import { redirect } from "next/navigation";
 import AttachmentForm from "./_components/attachment-form";
 import CategoryForm from "./_components/category-form";
+import ChaptersForm from "./_components/chapters-form";
 import DescriptionForm from "./_components/description-form";
 import ImageForm from "./_components/image-form";
 import PriceForm from "./_components/price-form";
@@ -31,11 +32,17 @@ const CourseIdPage = async ({
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
+      userId
     },
     include: {
       attachments: {
         orderBy: {
-          createdAt: "desc"
+          createdAt: "desc",
+        }
+      },
+      chapters: {
+        orderBy: {
+          position: "asc",
         }
       }
     }
@@ -47,8 +54,6 @@ const CourseIdPage = async ({
     },
   });
 
-  // console.log(categories);
-
   if (!course) {
     return redirect("/");
   }
@@ -59,6 +64,7 @@ const CourseIdPage = async ({
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some((chapter) => chapter.isPublished), // check for that at least one chapter needs to be published
   ];
 
   const totalFields = requiredFields.length;
@@ -103,7 +109,7 @@ const CourseIdPage = async ({
               <IconBadge icon={ListChecks} />
               <h2 className="text-xl">Course Chapters</h2>
             </div>
-            <div>TODO: Chapters</div>
+            <ChaptersForm initialData={course} courseId={course.id} />
           </div>
           <div>
             <div className="flex items-center gap-x-2">
