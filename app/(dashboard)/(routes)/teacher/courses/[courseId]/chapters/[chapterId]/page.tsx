@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import ChapterDescriptionForm from "./_components/chapter-description-form";
 import ChapterTitleForm from "./_components/chapter-title-form";
 
 const ChapterIdPage = async ({
@@ -74,6 +75,11 @@ const ChapterIdPage = async ({
               courseId={params.courseId}
               chapterId={params.chapterId}
               initialData={chapter}
+            />
+            <ChapterDescriptionForm
+              initialData={chapter}
+              chapterId={chapter.id}
+              courseId={chapter.courseId}
             />
           </div>
         </div>
