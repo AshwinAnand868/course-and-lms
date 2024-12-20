@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 
 import Editor from "@/components/editor";
+import Preview from "@/components/preview";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import axios from "axios";
@@ -33,14 +34,18 @@ const formSchema = z.object({
   description: z.string().min(1),
 });
 
-const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDescriptionFormProps) => {
+const ChapterDescriptionForm = ({
+  initialData,
+  courseId,
+  chapterId,
+}: ChapterDescriptionFormProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || ""
+      description: initialData?.description || "",
     },
   });
 
@@ -80,7 +85,17 @@ const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDes
         </Button>
       </div>
       {!isEditing ? (
-        <p className={cn("text-sm mt-2", !initialData.description && "text-slate-500 italic")}>{initialData.description || "No description"}</p>
+        <div
+          className={cn(
+            "text-sm mt-2",
+            !initialData.description && "text-slate-500 italic"
+          )}
+        >
+          {!initialData.description && "No description"}
+          {initialData.description && (
+            <Preview value={initialData.description} />
+          )}
+        </div>
       ) : (
         <Form {...form}>
           <form
@@ -93,9 +108,7 @@ const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDes
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Editor
-                      {...field}
-                    />
+                    <Editor {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,7 +116,9 @@ const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDes
             />
 
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">Save</Button>
+              <Button disabled={!isValid || isSubmitting} type="submit">
+                Save
+              </Button>
             </div>
           </form>
         </Form>
