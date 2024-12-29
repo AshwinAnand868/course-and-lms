@@ -1,3 +1,4 @@
+import { ConfettiProvider } from '@/components/providers/confetti-provider';
 import { ToastProvider } from '@/components/providers/toaster-provider';
 import {
   ClerkProvider
@@ -33,6 +34,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <ConfettiProvider />
           <ToastProvider />
           {children}
         </body>
