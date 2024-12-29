@@ -77,7 +77,7 @@ const ChapterAccessForm = ({
           ) : (
             <>
               <Pencil className="h-4 w-4" />
-              Edit description
+              Edit access
             </>
           )}
         </Button>

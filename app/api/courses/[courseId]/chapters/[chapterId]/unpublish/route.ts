@@ -22,8 +22,6 @@ export async function PATCH(
       });
     }
 
-    const courseId = params.courseId;
-
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
@@ -36,43 +34,42 @@ export async function PATCH(
         status: 401,
       });
 
-    const chapterId = params.chapterId;
-
-    const chapter = await db.chapter.findUnique({
-      where: {
-        id: chapterId,
-        courseId: courseId,
-      },
-    });
-
-    const muxData = await db.muxData.findUnique({
-        where: {
-            chapterId: params.chapterId
-        }
-    });
-
-    // never trust user inputs as they can directly call the api
-    if (!chapter || !muxData || !chapter.title || !chapter.description || !chapter.videoUrl) {
-      return new NextResponse("Missing required fields", {
-        status: 400,
-      });
-    }
-
     const updatedChapter = await db.chapter.update({
         where: {
-            id: params.chapterId
+            id: params.chapterId,
+            courseId: params.courseId,
         },
         data: {
             isPublished: false
         }
     });
 
+    const publishedChaptersInCourse = await db.chapter.findMany({
+      where: {
+        isPublished: true,
+        courseId: params.courseId
+      }
+    });
+
+    if(!publishedChaptersInCourse.length) {
+      // unpublish the course as well
+
+      await db.course.update({
+        where: {
+          id: params.courseId
+        },
+        data: {
+          isPublished: false
+        }
+      })
+    }
+
     return NextResponse.json(updatedChapter);
 
   } catch (error) {
-    console.log("Error occurred while publishing the chapter ", error);
+    console.log("Error occurred while unpublishing the chapter ", error);
 
-    return new NextResponse("Error occurred while publishing the chapter", {
+    return new NextResponse("Error occurred while unpublishing the chapter", {
       status: 500,
     });
   }
