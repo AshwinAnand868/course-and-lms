@@ -9,6 +9,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -36,6 +37,7 @@ model Course {
   purchases   Purchase[]
 
   @@index([categoryId])
+  @@fulltext([title])
 }
 
 // category can have many courses

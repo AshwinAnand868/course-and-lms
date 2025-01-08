@@ -1,3 +1,4 @@
+import SearchInput from "@/components/search-input";
 import { db } from "@/lib/db";
 import Categories from "./_components/categories";
 
@@ -10,11 +11,16 @@ const SearchPage = async () => {
     });
 
     return ( 
+        <>
+        <div className="px-6 pt-6 md:hidden block md:mb-0">
+            <SearchInput />
+        </div>
         <div className="p-6">
             <Categories
                 items={categories}
             />
         </div>
+        </>
     );
 }
  
