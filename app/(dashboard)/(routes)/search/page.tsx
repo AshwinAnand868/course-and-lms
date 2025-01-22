@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCourses } from "@/actions/get-courses";
 import CoursesList from "@/components/courses-list";
 import SearchInput from "@/components/search-input";
@@ -35,7 +37,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   return (
     <>
       <div className="px-6 pt-6 md:hidden block md:mb-0">
-        <Suspense fallback={"Search Input"}>
+        <Suspense fallback={<div>Loading Search Input...</div>}>
           <SearchInput />
         </Suspense>
       </div>
