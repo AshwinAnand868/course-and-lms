@@ -15,7 +15,7 @@ interface CourseSidebarProps {
 
 export const CourseSidebar = async ({
   course,
-  progressCount,
+  // progressCount,
 }: CourseSidebarProps) => {
   const { userId } = await auth();
 
