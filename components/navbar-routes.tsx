@@ -12,7 +12,7 @@ export const NavbarRoutes = () => {
 
   // constants that change content of nav bar based on their values
   const isTeacherPage = pathname?.startsWith("/teacher"); // for teacher mode
-  const isPlayerPage = pathname?.includes("/chapter"); // individual course page - this means we will not
+  const isCoursePage = pathname?.includes("/courses"); // individual course page - this means we will not
   // have normal sidebar, we will have sidebar with chapters of course
   const isSearchPage = pathname === "/search";
 
@@ -24,7 +24,7 @@ export const NavbarRoutes = () => {
         </div>
       )}
       <div className="flex gap-x-2 ml-auto">
-        {isTeacherPage || isPlayerPage ? (
+        {isTeacherPage || isCoursePage ? (
           <Link href="/">
             <Button size={"sm"} variant={"ghost"}>
               <LogOut className="h-4 w-4 mr-2" />
