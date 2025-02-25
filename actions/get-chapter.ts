@@ -7,6 +7,7 @@ interface GetChapterProps {
     chapterId: string;
 }
 
+// all chapter data based on the UI page
 export const getChapter = async ({
     courseId,
     userId,
